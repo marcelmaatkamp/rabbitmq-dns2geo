@@ -56,7 +56,8 @@ export class Exchange {
   }
 
   publish(message: string) {
-    this.exchange.publish('', message);
+    // hack: contenttype hardcoded to JSON
+    this.exchange.publish('', message, {contentType: "application/json"});
   }
 
   close() {
