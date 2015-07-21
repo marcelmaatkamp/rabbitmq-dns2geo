@@ -84,7 +84,7 @@ class GoogleApi {
                     this.geoStore.store(JSON.stringify(result));
                 }
 
-                logger.info("Response received from Google Geoloacation API("+this.apiKey+")");
+                logger.info("Response received from Google Geolocation API("+this.apiKey+")");
             })
         });
         request.on('error', (e) => {
@@ -288,7 +288,9 @@ var geoResultExchange = new Amqp.Exchange({
 var geoStore = new Store.ExchangeStore(geoResultExchange);
 
 //Set the Google Geolocation API key using the api.json content.
-var googleApi = new GoogleApi(process.env.API_GOOGLE, geoStore);
+var googleApiKey = process.env.API_GOOGLE || process.env.GOOGLE_API_KEY
+logger.info("Using google api key: " + googleApiKey)
+var googleApi = new GoogleApi(googleApiKey, geoStore);
 var tempStore = new TempStore(googleApi, dnsStore);
 
 //Set the maximum per-sensor API request rate to one query per 30 seconds.
