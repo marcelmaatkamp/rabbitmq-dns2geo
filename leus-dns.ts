@@ -288,7 +288,7 @@ var geoResultExchange = new Amqp.Exchange({
 var geoStore = new Store.ExchangeStore(geoResultExchange);
 
 //Set the Google Geolocation API key using the api.json content.
-var googleApi = new GoogleApi("{ apikey: " + process.env.API_GOOGLE + "}", geoStore);
+var googleApi = new GoogleApi("{ \"apikey\": \"" + process.env.API_GOOGLE + "\"}", geoStore);
 var tempStore = new TempStore(googleApi, dnsStore);
 
 //Set the maximum per-sensor API request rate to one query per 30 seconds.
