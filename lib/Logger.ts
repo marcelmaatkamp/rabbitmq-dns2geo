@@ -3,7 +3,7 @@
  * Created by Ab on 21-07-2015
  */
 
-import winston = require("winston");
+import * as winston from "winston";
 
 // configure logging
 export function startLog() {

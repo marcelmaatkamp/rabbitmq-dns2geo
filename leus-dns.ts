@@ -5,26 +5,27 @@
  * Ab Reitsma, 13-07-2015
  */
 
-import https = require("https");
-import stream = require("stream");
-import fs = require("fs");
+// we do not have typescript definition files for the following node modules,
+// so we just require them (without having type support from the IDE):
+var amq = require("amq");
 
-import Amqp = require('./lib/AmqpWrapper');
-import winston = require("winston");
+// node.js system imports
+import * as https from "https";
+import * as stream from "stream";
+import * as fs from "fs";
+
+// amqp (rabbitmq) queue and exchange abstraction
+import * as Amqp from "./lib/AmqpWrapper";
 
 // configure logging
 import Logger = require("./lib/Logger");
 var logger = Logger.startLog();
 
 // get AMQP DNS message format
-import AmqpDns = require("./lib/AmqpDns");
+import * as AmqpDns from "./lib/AmqpDns";
 
 // get result storage implementations
-import Store = require("./lib/Store")
-
-// we do not have typescript definition files for the following node modules,
-// so we just require them (without having type support from the IDE):
-var amq = require("amq");
+import {Store, FileStore, ExchangeStore} from "./lib/Store";
 
 
 // define the used structures
@@ -38,10 +39,10 @@ interface WifiAccessPoint {
 //Google Geolocation support class
 class GoogleApi {
     apiKey: string;
-    geoStore: Store.Store;
+    geoStore: Store;
     server: any;
 
-    constructor(key: string, geoStore?: Store.Store) {
+    constructor(key: string, geoStore?: Store) {
         this.apiKey = key;
         this.geoStore = geoStore;
     }
@@ -99,12 +100,12 @@ class GoogleApi {
 //The glue between the incomming DNS requests and the outgoing Google Geolocation API calls.
 class TempStore {
     googleApi: GoogleApi;
-    dnsStore: Store.Store;
+    dnsStore: Store;
     queries: any = [];
     needsFlush: any = [];
 
 
-    constructor(googleApi: GoogleApi, dnsStore?: Store.Store) {
+    constructor(googleApi: GoogleApi, dnsStore?: Store) {
         this.googleApi = googleApi;
         this.dnsStore = dnsStore;
     }
@@ -272,7 +273,7 @@ class TempStore {
 }
 
 // initialize file store
-var dnsStore = new Store.FileStore("./logs/dns-events.txt");
+var dnsStore = new FileStore("./logs/dns-events.txt");
 
 // initialize exchange store
 var geoResultExchange = new Amqp.Exchange({
@@ -285,7 +286,7 @@ var geoResultExchange = new Amqp.Exchange({
         autoDelete: false
     }
 });
-var geoStore = new Store.ExchangeStore(geoResultExchange);
+var geoStore = new ExchangeStore(geoResultExchange);
 
 //Set the Google Geolocation API key using the api.json content.
 var googleApiKey = process.env.API_GOOGLE || process.env.GOOGLE_API_KEY

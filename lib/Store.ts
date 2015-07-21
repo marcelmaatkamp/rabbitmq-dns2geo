@@ -3,11 +3,11 @@
  * Created by Ab Reitsma on 21-07-2015
  */
  
-import stream = require("stream");
-import fs = require("fs");
-import os = require("os");
+import * as stream from "stream";
+import * as fs from "fs";
+import * as os from "os";
 
-import Amqp = require("./AmqpWrapper");
+import * as Amqp from "./AmqpWrapper";
  
 export interface Store {
     store(result: string);
