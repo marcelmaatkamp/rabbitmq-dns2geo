@@ -3,7 +3,7 @@ nodejs DNS to geo converter written in typescript
 
 to install:
 
-1. add an api.json file in the root of the project, format:{"apikey" : "google_developer_key_id"}
+1. add an API_GOOGLE environment variable with your google_developer_key_id
 2. make sure node.js is installed
 3. make sure latest version of typescript is installed ([sudo] npm install -g typescript@latest)
 4. make sure node.js modules are installed (npm install)
