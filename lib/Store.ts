@@ -28,7 +28,6 @@ export class FileStore implements Store {
 
 export class ExchangeStore implements Store {
     exchange: Amqp.Exchange;
-    file: FileStore; 
     
     constructor(queue: Amqp.Exchange) {
         this.exchange = queue;
@@ -36,7 +35,6 @@ export class ExchangeStore implements Store {
     
     store(result: string) {
        this.exchange.publish(result);
-       this.file.store(result); 
     }
 }
 
