@@ -1,0 +1,14 @@
+{
+  "name": "leus-dns",
+  "version": "0.1.1",
+  "private": true,
+  "author": "Ab Reitsma",
+  "scripts": {
+    "start": "node ./leus-dns"
+  },
+  "dependencies": {
+    "amq": "^0.4.8",
+    "native-dns": "^0.7.0",
+    "winston": "^1.0.1"
+  }
+}

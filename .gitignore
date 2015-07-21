@@ -1,0 +1,6 @@
+logs/**
+node_modules
+node_modules/**
+api.json
+**/*.js.map
+**/*.js
