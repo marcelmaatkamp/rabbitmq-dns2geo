@@ -21,14 +21,13 @@ export class FileStore implements Store {
     }
 
     store(result: string) {
-        var log = fs.createWriteStream(this.fileName, { flags: "a" });
-        log.end(result + os.EOL);
+        // var log = fs.createWriteStream(this.fileName, { flags: "a" });
+        // log.end(result + os.EOL);
     }
 }
 
 export class ExchangeStore implements Store {
     exchange: Amqp.Exchange;
-    file: FileStore; 
     
     constructor(queue: Amqp.Exchange) {
         this.exchange = queue;
@@ -36,7 +35,6 @@ export class ExchangeStore implements Store {
     
     store(result: string) {
        this.exchange.publish(result);
-       this.file.store(result); 
     }
 }
 
@@ -50,7 +48,7 @@ export class ExchangeFileStore implements Store {
     }
     
     store(result: string) {
-       this.exchange.store(result);
-       this.file.store(result); 
+       // this.exchange.store(result);
+       // this.file.store(result); 
     }
 }

@@ -84,7 +84,7 @@ class GoogleApi {
                     this.geoStore.store(JSON.stringify(result));
                 }
 
-                logger.info("Response received from Google Geoloacation API.");
+                logger.info("Response received from Google Geoloacation API("+this.apiKey+")");
             })
         });
         request.on('error', (e) => {
