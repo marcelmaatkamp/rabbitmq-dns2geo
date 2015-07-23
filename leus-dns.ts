@@ -277,7 +277,7 @@ var dnsStore = new FileStore("./logs/dns-events.txt");
 
 // initialize exchange store
 var geoResultExchange = new Amqp.Exchange({
-    connectionUrl: '37.48.122.199',
+    connectionUrl: 'rabbitmq',
     socketOptions: {},
     exchange: 'geo',
     exchangeOptions: {
@@ -299,7 +299,7 @@ setInterval(() => {tempStore.flush()}, 30000);
 
 //Configure the message queue
 var dnsQueryQueue = new Amqp.Queue({
-    connectionUrl: "37.48.122.199",
+    connectionUrl: "rabbitmq",
     socketOptions: {},
     queue: 'dns_log',
     queueOptions: {
