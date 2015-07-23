@@ -301,7 +301,7 @@ setInterval(() => {tempStore.flush()}, 30000);
 var dnsQueryQueue = new Amqp.Queue({
     connectionUrl: "rabbitmq",
     socketOptions: {},
-    queue: 'dns_log',
+    queue: 'dns_geo',
     queueOptions: {
         durable: true,
         autoDelete: false
