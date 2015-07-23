@@ -10,6 +10,9 @@
     },
     "node/node.d.ts": {
       "commit": "7bab855ae33d79e86da1eb6c73a7f7eab2676ddb"
+    },
+    "bluebird/bluebird.d.ts": {
+      "commit": "581563c4684d405afec14260ba79a89a52666c09"
     }
   }
 }

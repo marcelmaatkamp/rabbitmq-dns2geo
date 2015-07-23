@@ -1,5 +1,5 @@
 # rabbitmq-dns2geo
-nodejs DNS to geo converter written in typescript
+nodejs DNS to geo converter written in typescript, hardcoded for a demonstrator application
 
 to install:
 
