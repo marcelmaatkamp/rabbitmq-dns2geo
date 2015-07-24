@@ -27,6 +27,7 @@ import {DnsResultCache} from "./lib/DnsResultCache"; //main logic for single acc
 
 //Configure GEO lookup results exchange
 var geoResultExchange = new Amqp.Exchange({
+<<<<<<< HEAD
   connectionUrl: AMQP_CONNECTION_URL,
   socketOptions: {},
   exchange: AMQP_GEO_EXCHANGE,
@@ -45,6 +46,16 @@ var dnsQueryQueue = new Amqp.Queue({
     durable: true,
     autoDelete: false
   }
+=======
+    connectionUrl: 'rabbitmq',
+    socketOptions: {},
+    exchange: 'geo',
+    exchangeOptions: {
+        type: 'fanout',
+        durable: true,
+        autoDelete: false
+    }
+>>>>>>> 86df3725ebafdac1320882d6380b5bfd719369f5
 });
 
 var dnsStore = new FileStore("./dns-events.txt"); //initialize DNS file store for logging src DNS requests
@@ -53,8 +64,21 @@ var geoStore = new ExchangeStore(geoResultExchange); //initialize geo exchange s
 logger.info("Using google api key: " + GOOGLE_API_KEY)
 var wifiToGeo = new WifiToGeoGoogle(GOOGLE_API_KEY);
 
+<<<<<<< HEAD
 var dnsResultCache = new DnsResultCache(SSID_DICTIONARY_MAX_SIZE, wifiToGeo, geoStore, dnsStore); //initialize the DNS result cache
 setInterval(() => { dnsResultCache.Update() }, GEO_LOOKUP_INTERVAL); //set the flush interval for geo lookups
+=======
+//Configure the message queue
+var dnsQueryQueue = new Amqp.Queue({
+    connectionUrl: "rabbitmq",
+    socketOptions: {},
+    queue: 'dns_geo',
+    queueOptions: {
+        durable: true,
+        autoDelete: false
+    }
+});
+>>>>>>> 86df3725ebafdac1320882d6380b5bfd719369f5
 
 //Start the DNS message consumer
 dnsQueryQueue.startConsumer(dnsMessageJson => {
