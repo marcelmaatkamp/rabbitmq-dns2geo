@@ -36,10 +36,10 @@ export interface Address {
 
 export interface Message {
     header: MessageHeader,
-    question: [Query],
-    answer: [any],
-    authority: [any],
-    additional: [any],
-    edns_options: [any],
+    question: Query[],
+    answer: any[],
+    authority: any[],
+    additional: any[],
+    edns_options: any[],
     address: Address
 }

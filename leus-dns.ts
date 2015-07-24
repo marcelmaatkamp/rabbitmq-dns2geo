@@ -5,7 +5,7 @@
  * Created by Ab Reitsma on 13-07-2015
  */
  
-// configurable settings
+// configurable (environment) settings
 const GEO_LOOKUP_INTERVAL = process.env.GEO_LOOKUP_INTERVAL || 900000; //in ms
 const AMQP_CONNECTION_URL = process.env.AMQP_CONNECTION_URL || "37.48.122.199";
 const AMQP_DNS_QUEUE = process.env.AMQP_DNS_QUEUE || "dns_log";
