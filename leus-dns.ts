@@ -8,7 +8,7 @@
 // configurable (environment) settings
 const GEO_LOOKUP_INTERVAL = process.env.GEO_LOOKUP_INTERVAL || 900000; //in ms
 const AMQP_CONNECTION_URL = process.env.AMQP_CONNECTION_URL || "rabbitmq";
-const AMQP_DNS_QUEUE = process.env.AMQP_DNS_QUEUE || "dns_log";
+const AMQP_DNS_QUEUE = process.env.AMQP_DNS_QUEUE || "dns_geo";
 const AMQP_GEO_EXCHANGE = process.env.AMQP_GEO_EXCHANGE || "geo";
 const GOOGLE_API_KEY = process.env.API_GOOGLE || process.env.GOOGLE_API_KEY;
 const SSID_DICTIONARY_MAX_SIZE = process.env.SSID_DICTIONARY_MAX_SIZE || 10;
