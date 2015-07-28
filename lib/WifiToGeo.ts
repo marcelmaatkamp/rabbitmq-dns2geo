@@ -76,12 +76,13 @@ export class WifiToGeoGoogle implements WifiToGeo {
         res.on("end", () => {
           try {
             var result = JSON.parse(resultData);
+            console.log("result: "+resultData);
             if (result.error !== undefined) {
               reject(result.error);
             }
             var location: GeoLocation = {
-              latitude: result.lat,
-              longitude: result.lng,
+              latitude: result.location.lat,
+              longitude: result.location.lng,
               accuracy: result.accuracy
             };
             resolve(location);
@@ -95,6 +96,7 @@ export class WifiToGeoGoogle implements WifiToGeo {
       request.on('error', (e) => {
         reject(e);
       })
+      console.log("data: "+jsonData);
       request.write(jsonData);
       request.end();
     });
