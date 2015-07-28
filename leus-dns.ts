@@ -6,11 +6,13 @@
  */
  
 // configurable (environment) settings
+const GEO_HOSTNAME = process.env.GEO_HOSTNAME || "www.googleapis.com";
+const GEO_URL = process.env.GEO_URL || "/geolocation/v1/geolocate";
 const GEO_LOOKUP_INTERVAL = process.env.GEO_LOOKUP_INTERVAL || 900000; //in ms
+const GEO_API_KEY = process.env.GEO_API_KEY;
 const AMQP_CONNECTION_URL = process.env.AMQP_CONNECTION_URL || "rabbitmq";
 const AMQP_DNS_QUEUE = process.env.AMQP_DNS_QUEUE || "dns_geo";
 const AMQP_GEO_EXCHANGE = process.env.AMQP_GEO_EXCHANGE || "geo";
-const GOOGLE_API_KEY = process.env.API_GOOGLE || process.env.GOOGLE_API_KEY;
 const SSID_DICTIONARY_MAX_SIZE = process.env.SSID_DICTIONARY_MAX_SIZE || 10;
 
 //we do not have typescript definition files for the following node modules,
@@ -50,8 +52,8 @@ var dnsQueryQueue = new Amqp.Queue({
 var dnsStore = new FileStore("./dns-events.txt"); //initialize DNS file store for logging src DNS requests
 var geoStore = new ExchangeStore(geoResultExchange); //initialize geo exchange store for geo lookup results
 
-logger.info("Using google api key: " + GOOGLE_API_KEY)
-var wifiToGeo = new WifiToGeoGoogle(GOOGLE_API_KEY);
+logger.info("Using google api key: " + GEO_API_KEY)
+var wifiToGeo = new WifiToGeoGoogle(GEO_API_KEY, GEO_HOSTNAME, GEO_URL);
 
 var dnsResultCache = new DnsResultCache(SSID_DICTIONARY_MAX_SIZE, wifiToGeo, geoStore, dnsStore); //initialize the DNS result cache
 setInterval(() => { dnsResultCache.Update() }, GEO_LOOKUP_INTERVAL); //set the flush interval for geo lookups

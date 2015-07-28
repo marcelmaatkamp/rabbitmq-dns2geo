@@ -23,7 +23,8 @@
 			// Environment variables passed to the program.
 			"env": {
         "AMQP_CONNECTION_URL": "37.48.122.199",
-        "AMQP_DNS_QUEUE": "dns_geo_ab"
+        "AMQP_DNS_QUEUE": "dns_geo_ab",
+        "GEO_LOOKUP_INTERVAL": 2000        
        },
 			// Use JavaScript source maps (if they exist).
 			"sourceMaps": true,
