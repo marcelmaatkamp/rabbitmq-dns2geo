@@ -180,10 +180,11 @@ export class DnsResultCache {
               sensorname: sensorId,
               flushtimestamp: (new Date).toISOString()
             }
+            logger.info("Success result from Google GeoLocation API:" + JSON.stringify(result));
             this.geoStore.store(JSON.stringify(result));
           })
           .error(e => {
-            logger.error(e.msg || e.message);
+            logger.error("Error result from Google GeoLocation API: " + (e.msg || e.message));
           });
       }
     }

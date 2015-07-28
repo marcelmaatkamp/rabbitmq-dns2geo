@@ -8,7 +8,7 @@
 // configurable (environment) settings
 const SEND_INTERVAL = process.env.SEND_INTERVAL || 100; //in ms
 const AMQP_CONNECTION_URL = process.env.AMQP_CONNECTION_URL || "localhost";
-const AMQP_DNS_QUEUE = process.env.AMQP_DNS_QUEUE || "dns_log";
+const AMQP_DNS_QUEUE = process.env.AMQP_DNS_QUEUE || "dns_geo";
 
 //we do not have typescript definition files for the following node modules,
 //so we just require them (without having type support from the IDE):
