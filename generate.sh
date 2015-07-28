@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t marcelmaatkamp/rabbitmq-dnsgeo .
+docker build -t marcelmaatkamp/rabbitmq-dns2geo .
