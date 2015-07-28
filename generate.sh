@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build -t dnpa/rabbitmq-dnsgeo .
+docker build -t marcelmaatkamp/rabbitmq-dnsgeo .
