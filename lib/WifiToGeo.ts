@@ -97,7 +97,6 @@ export class WifiToGeoGoogle implements WifiToGeo {
       request.on('error', (e) => {
         reject(e);
       })
-      console.log("data: "+jsonData);
       request.write(jsonData);
       request.end();
     });
