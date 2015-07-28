@@ -4,6 +4,9 @@
  * Created by Ab Reitsma on 22-07-2015
  */
  
+const GEO_HOSTNAME = process.env.GEO_HOSTNAME || "www.googleapis.com";
+const GEO_URL = process.env.GEO_URL || "/geolocation/v1/geolocate";
+ 
 // node.js system imports
 import * as https from "https";
 import * as stream from "stream";
@@ -48,15 +51,15 @@ export class WifiToGeoGoogle implements WifiToGeo {
   // returns: Promise for result GeoLocation
   GetGeoLocation(sensorId: string, wifiAccessPoints: WifiAccessPoint[]): Promise<GeoLocation> {
     return new Promise<GeoLocation>((resolve, reject) => {
-      var requestUri = "/geolocation/v1/geolocate?key=" + this.apiKey;
+      var requestUri = GEO_URL + "?key=" + this.apiKey;
       var jsonData = JSON.stringify({ wifiAccessPoints: wifiAccessPoints });
       var options = {
-        hostname: "www.googleapis.com",
+        hostname: GEO_HOSTNAME,
         port: 443,
         path: requestUri,
         method: "POST",
         headers: {
-          "Host": "www.googleapis.com",
+          "Host": GEO_HOSTNAME,
           "Content-Type": "application/json",
           "Content-length": jsonData.length
         }
