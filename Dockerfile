@@ -1,4 +1,4 @@
-FROM neverbland/nodejs-typescript
+FROM neverbland/nodejs-typescript:1.3.2
 
 RUN mkdir /dnsgeo
 WORKDIR /dnsgeo
