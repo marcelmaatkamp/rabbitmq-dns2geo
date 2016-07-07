@@ -32,6 +32,10 @@ export class Exchange {
     }
   }
 
+  getExchange() {
+    return this.exchange;
+  }
+
   startConsumer(consumerFunction: (string) => void) {
     this.consumerFunction = consumerFunction;
     this.queue = this.connection.queue(this.queueName, {exclusive: true, durable: false});
@@ -128,5 +132,3 @@ export class Queue {
       });
   }
 }
-
-

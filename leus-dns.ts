@@ -1,16 +1,17 @@
 /**
  * leus-dns.ts - translation of geodns.js to typescript for better understanding of the code
- * 
+ *
  * fully refactored 23-07-2015
  * Created by Ab Reitsma on 13-07-2015
  */
- 
+
 // configurable (environment) settings
 const GEO_HOSTNAME = process.env.GEO_HOSTNAME || "www.googleapis.com";
 const GEO_URL = process.env.GEO_URL || "/geolocation/v1/geolocate";
 const GEO_LOOKUP_INTERVAL = process.env.GEO_LOOKUP_INTERVAL || 900000; //in ms
 const GEO_API_KEY = process.env.GEO_API_KEY;
 const AMQP_CONNECTION_URL = process.env.AMQP_CONNECTION_URL || "rabbitmq";
+const AMQP_DNS_EXCHANGE = process.env.AMQP_DNS_EXCHANGE || "dns";
 const AMQP_DNS_QUEUE = process.env.AMQP_DNS_QUEUE || "dns_geo";
 const AMQP_GEO_EXCHANGE = process.env.AMQP_GEO_EXCHANGE || "geo";
 const SSID_DICTIONARY_MAX_SIZE = process.env.SSID_DICTIONARY_MAX_SIZE || 10;
@@ -27,7 +28,17 @@ import {Store, FileStore, ExchangeStore} from "./lib/Store"; //storage implement
 import {WifiToGeoGoogle} from "./lib/WifiToGeo"; //geolocation for wifi access points
 import {DnsResultCache} from "./lib/DnsResultCache"; //main logic for single access point DNS request processing
 
-//Configure GEO lookup results exchange
+//Configure exchange
+var dnsExchange = new Amqp.Exchange({
+  connectionUrl: AMQP_CONNECTION_URL,
+  socketOptions: {},
+  exchange: AMQP_DNS_EXCHANGE,
+  exchangeOptions: {
+    type: "fanout",
+    durable: true,
+    autoDelete: false
+  }
+});
 var geoResultExchange = new Amqp.Exchange({
   connectionUrl: AMQP_CONNECTION_URL,
   socketOptions: {},
@@ -48,6 +59,8 @@ var dnsQueryQueue = new Amqp.Queue({
     autoDelete: false
   }
 });
+dnsQueryQueue.bind(dnsExchange.getExchange());
+
 
 var dnsStore = new FileStore("./dns-events.txt"); //initialize DNS file store for logging src DNS requests
 var geoStore = new ExchangeStore(geoResultExchange); //initialize geo exchange store for geo lookup results
