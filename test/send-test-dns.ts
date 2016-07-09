@@ -29,6 +29,7 @@ var dnsQueryQueue = new Amqp.Queue({
 });
 
 var dnsRequestMessage: AmqpDns.Message = {
+  date: new Date(),
   header: { id: 0, qr: 0, opcode: 0, aa: 0, tc: 0, rd: 0, ra: 0, res1: 0, res2: 0, res3: 0, rcode: 0 },
   question: [{ name: "", type: 1, class: 1 }],
   answer: [],
