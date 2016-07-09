@@ -35,6 +35,7 @@ export interface Address {
 }
 
 export interface Message {
+    date: Date,
     header: MessageHeader,
     question: Query[],
     answer: any[],

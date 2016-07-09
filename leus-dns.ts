@@ -77,6 +77,6 @@ dnsQueryQueue.startConsumer(dnsMessageJson => {
   var dnsMessage = <AmqpDns.Message> JSON.parse(dnsMessageJson);
   for (var i = 0, len = dnsMessage.question.length; i < len; i++) {
     var dnsQuery = dnsMessage.question[i];
-    dnsResultCache.Add(dnsQuery.name);
+    dnsResultCache.Add(dnsQuery.name, dnsMessage.date);
   }
 })

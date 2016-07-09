@@ -1,6 +1,6 @@
 /**
- * DnsResultCache.ts - temporary storage that combines up to maxCache DNS 
- * requests per sensor. And executes every updateInterval a geolookup with the 
+ * DnsResultCache.ts - temporary storage that combines up to maxCache DNS
+ * requests per sensor. And executes every updateInterval a geolookup with the
  * specified wifiToGeo interface implementation.
  * Created by Ab Reitsma on 22-07-2015
  */
@@ -25,12 +25,12 @@ export class DnsResultCache {
     this.geoStore = geoStore;
     this.dnsStore = dnsStore;
   }
-    
+
   //Check a dbm token
   private CheckDbm(dbm: string) {
     //The first token in the dns name is the the character 's' followed by the (negative integer) signal strength in dbm.
     var signalStrength = parseInt(dbm.substr(1, dbm.length - 1), 10);
-    //The result should be somewhere in the -30dbm .. -100dbm range to be valid. 
+    //The result should be somewhere in the -30dbm .. -100dbm range to be valid.
     if (signalStrength > -30) {
       throw new Error("Invalid dbm string: " + dbm);
     }
@@ -39,10 +39,10 @@ export class DnsResultCache {
     }
     return signalStrength;
   }
-	
+
   //Check a MAC address token
   private CheckMac(mac: string) {
-    const MAC_LENGTH = 12;	
+    const MAC_LENGTH = 12;
     //Must be exactly 12 characters long.
     if (mac.length !== MAC_LENGTH) {
       throw new Error("Invalid mac string: " + mac + " (wrong size)");
@@ -53,7 +53,7 @@ export class DnsResultCache {
       if ("1234567890abcdef".indexOf(mac.charAt(i)) < 0) {
         throw new Error("Invalid mac string: " + mac + " (not hex)");
       }
-    }		
+    }
     //Add the colons in the proper places to return the BSSID mac adress.
     return mac.substr(0, 2) + ":" +
       mac.substr(2, 2) + ":" +
@@ -62,7 +62,7 @@ export class DnsResultCache {
       mac.substr(8, 2) + ":" +
       mac.substr(10, 2);
   }
-	
+
   //Check a bigish numeric token
   private CheckBigInt(bigInt: string) {
     var len = bigInt.length;
@@ -76,7 +76,7 @@ export class DnsResultCache {
     }
     return bigInt;
   }
-  
+
   //Limit the number of BSSID to the last DICTIONARY_MAX_SIZE
   private Limit(sensor) {
     if (Object.keys(this.queries[sensor]).length > this.dictionaryMaxSize) {
@@ -96,9 +96,9 @@ export class DnsResultCache {
       delete this.queries[sensor][oldestbssid];
     }
   }
-		
+
   //Parse and add a single DNS name based measurement to the tempstore.
-  public Add(dnsName: string) {
+  public Add(dnsName: string, date: Date) {
     var dnsTokens;
     var db; //signal strength of access point
     var mac; //BSSID mac address of access point
@@ -117,17 +117,18 @@ export class DnsResultCache {
       mac = this.CheckMac(dnsTokens[1]);
       ticks = this.CheckBigInt(dnsTokens[2]);
       sensorId = this.CheckBigInt(dnsTokens[3]);
-			
+
       //Make sure the specific sensor is defined in our queries store.
       if (!(this.queries.hasOwnProperty(sensorId))) {
         this.queries[sensorId] = {};
         this.needsFlush[sensorId] = false;
       }
       logger.info("Adding request to tempstore, mac=" + mac);
-			
+
       //Add (or overwrite) query for specific BSSID to the tempstore.
       this.queries[sensorId][mac] = {
         "timestamp": Math.floor(Date.now() / 1000),
+        "date": date,
         "dbm": db,
         "mac": mac
       };
@@ -161,9 +162,11 @@ export class DnsResultCache {
         for (var bssid in this.queries[sensorId]) {
           if (this.queries[sensorId].hasOwnProperty(bssid)) {
             measurement = this.queries[sensorId][bssid];
+            console.log("measurement: " + JSON.stringify(measurement));
             wifiAccessPoints.push({
               macAddress: measurement.mac,
               age: now - measurement.timestamp,
+              date: { $date: measurement.date },
               signalStrength: measurement.dbm
             });
           }
@@ -178,7 +181,7 @@ export class DnsResultCache {
               acc: geoLocation.accuracy,
               measurements: wifiAccessPoints,
               sensorname: sensorId,
-              flushtimestamp: (new Date).toISOString()
+              flushtimestamp: { $date: new Date() }
             }
             logger.info("Success result from Google GeoLocation API:" + JSON.stringify(result));
             this.geoStore.store(JSON.stringify(result));
