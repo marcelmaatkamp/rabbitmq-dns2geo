@@ -27,15 +27,12 @@ export class DnsResultCache {
   }
 
   //Check a dbm token
-  private CheckDbm(dbm: string) {
-    //The first token in the dns name is the the character 's' followed by the (negative integer) signal strength in dbm.
-    var signalStrength = parseInt(dbm.substr(1, dbm.length - 1), 10);
-    //The result should be somewhere in the -30dbm .. -100dbm range to be valid.
+  private CheckDbm(signalStrength: number) {
     if (signalStrength > -30) {
-      throw new Error("Invalid dbm string: " + dbm);
+      throw new Error("Invalid dbm string: " + signalStrength);
     }
     if (signalStrength < -100) {
-      throw new Error("Invalid dbm string: " + dbm);
+      throw new Error("Invalid dbm string: " + signalStrength);
     }
     return signalStrength;
   }
@@ -63,20 +60,6 @@ export class DnsResultCache {
       mac.substr(10, 2);
   }
 
-  //Check a bigish numeric token
-  private CheckBigInt(bigInt: string) {
-    var len = bigInt.length;
-    if (len < 1 || len > 20) {
-      throw new Error("Invalid integer string: " + bigInt + " (wrong size)");
-    }
-    for (var i = 0; i < len; i++) {
-      if ("1234567890".indexOf(bigInt.charAt(i)) < 0) {
-        throw new Error("Invalid integer string: " + bigInt + " (not decimal)");
-      }
-    }
-    return bigInt;
-  }
-
   //Limit the number of BSSID to the last DICTIONARY_MAX_SIZE
   private Limit(sensor) {
     if (Object.keys(this.queries[sensor]).length > this.dictionaryMaxSize) {
@@ -98,50 +81,34 @@ export class DnsResultCache {
   }
 
   //Parse and add a single DNS name based measurement to the tempstore.
-  public Add(dnsName: string, date: Date) {
-    var dnsTokens;
-    var db; //signal strength of access point
-    var mac; //BSSID mac address of access point
-    var ticks; //Duno, some ticks variable in DNS query, won't use.
-    var sensorId; //Unique identifier of sensor.
+  public Add(date: Date, sensor: number, macaddress: string, rssi: number) {
+    try { 
+      var db = this.CheckDbm(rssi);
+      var mac = this.CheckMac(macaddress);
 
-    logger.info("Incoming DNS request for: " + dnsName);
-
-    try {
-      //Get and check the first four tokens of the DNS name (ignore the rest).
-      dnsTokens = dnsName.split(".").slice(0, 4);
-      if (dnsTokens.length !== 4) {
-        throw new Error("Too few tokens");
-      }
-      db = this.CheckDbm(dnsTokens[0]);
-      mac = this.CheckMac(dnsTokens[1]);
-      ticks = this.CheckBigInt(dnsTokens[2]);
-      sensorId = this.CheckBigInt(dnsTokens[3]);
-
-      //Make sure the specific sensor is defined in our queries store.
-      if (!(this.queries.hasOwnProperty(sensorId))) {
-        this.queries[sensorId] = {};
-        this.needsFlush[sensorId] = false;
+      if (!(this.queries.hasOwnProperty(sensor))) {
+        this.queries[sensor] = {};
+        this.needsFlush[sensor] = false;
       }
       logger.info("Adding request to tempstore, mac=" + mac);
 
-      //Add (or overwrite) query for specific BSSID to the tempstore.
-      this.queries[sensorId][mac] = {
+      this.queries[sensor][mac] = {
         "timestamp": Math.floor(Date.now() / 1000),
         "date": date,
         "dbm": db,
         "mac": mac
       };
-      this.needsFlush[sensorId] = true;
+      this.needsFlush[sensor] = true;
 
       if (this.dnsStore !== undefined) {
-        this.dnsStore.store(JSON.stringify(this.queries[sensorId][mac]));
+        this.dnsStore.store(JSON.stringify(this.queries[sensor][mac]));
       }
 
-      this.Limit(sensorId);
+      this.Limit(sensor);
     }
     catch (e) {
-      logger.info(+ e.message + ", Ignoring DNS request for: " + dnsName);
+      logger.info(+ e.message + ", Ignoring DNS request for sensor("+sensor+"), mac("+macaddress+"), rssi("+rssi+")");
+      logger.info(e.stack);
     }
   }
 

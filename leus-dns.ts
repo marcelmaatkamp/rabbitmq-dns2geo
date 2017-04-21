@@ -74,9 +74,18 @@ setInterval(() => { dnsResultCache.Update() }, GEO_LOOKUP_INTERVAL); //set the f
 //Start the DNS message consumer
 dnsQueryQueue.startConsumer(dnsMessageJson => {
   logger.info("received: " + dnsMessageJson)
-  var dnsMessage = <AmqpDns.Message> JSON.parse(dnsMessageJson);
-  for (var i = 0, len = dnsMessage.question.length; i < len; i++) {
-    var dnsQuery = dnsMessage.question[i];
-    dnsResultCache.Add(dnsQuery.name, dnsMessage.date);
+  var measurements = <AmqpDns.Measurements> JSON.parse(dnsMessageJson);
+console.log(JSON.stringify(measurements));
+  for (var i = 0, len = measurements.ap.length; i < len; i++) {
+    var measurement = <AmqpDns.Measurement> measurements.ap[i];
+    var bssid = measurement.bssid.toString(16);
+    if(bssid.length==10) {
+      bssid = "00"+bssid;
+    }
+    if(bssid.length==11) { 
+      bssid = "0"+bssid;
+    }
+
+    dnsResultCache.Add(new Date(), measurements.id, bssid, measurement.rssi);
   }
 })
