@@ -54,6 +54,7 @@ export class WifiToGeoGoogle implements WifiToGeo {
     return new Promise<GeoLocation>((resolve, reject) => {
       var requestUri = this.geoUrl + "?key=" + this.apiKey;
       var jsonData = JSON.stringify({ wifiAccessPoints: wifiAccessPoints });
+
       var options = {
         hostname: this.geoHostName,
         port: 443,
@@ -77,7 +78,7 @@ export class WifiToGeoGoogle implements WifiToGeo {
         res.on("end", () => {
           try {
             var result = JSON.parse(resultData);
-            console.log("result: "+resultData);
+            // console.log("result: "+resultData);
             if (result.error !== undefined) {
               reject(result.error);
             }

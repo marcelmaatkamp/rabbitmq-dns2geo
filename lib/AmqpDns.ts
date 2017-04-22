@@ -5,6 +5,11 @@
  
  // amqp message queue payload example:
 
+export interface Data { 
+   timestamp: number,
+   data: Measurements
+}
+
 export interface Measurements { 
    id: number,
    ticker: number,

@@ -75,7 +75,7 @@ export class DnsResultCache {
         }
       }
       //And delete the oldest one.
-      logger.info("Dropping oldest request for mac=" + oldestbssid);
+      logger.debug("Dropping oldest request for mac=" + oldestbssid);
       delete this.queries[sensor][oldestbssid];
     }
   }
@@ -90,7 +90,7 @@ export class DnsResultCache {
         this.queries[sensor] = {};
         this.needsFlush[sensor] = false;
       }
-      logger.info("Adding request to tempstore, mac=" + mac);
+      logger.debug("Adding request to tempstore, mac=" + mac);
 
       this.queries[sensor][mac] = {
         "timestamp": Math.floor(Date.now() / 1000),
@@ -129,7 +129,6 @@ export class DnsResultCache {
         for (var bssid in this.queries[sensorId]) {
           if (this.queries[sensorId].hasOwnProperty(bssid)) {
             measurement = this.queries[sensorId][bssid];
-            console.log("measurement: " + JSON.stringify(measurement));
             wifiAccessPoints.push({
               macAddress: measurement.mac,
               age: now - measurement.timestamp,
@@ -139,7 +138,7 @@ export class DnsResultCache {
           }
         }
         //Invoke the google geolocation appi functionality
-        logger.info("Invoking Google GeoLocation API for " + sensorId);
+        logger.debug("Invoking Google GeoLocation API for " + sensorId);
         this.wifiToGeo.GetGeoLocation(sensorId, wifiAccessPoints)
           .then(geoLocation => {
             var result = {
@@ -150,11 +149,12 @@ export class DnsResultCache {
               sensorname: sensorId,
               flushtimestamp: { $date: new Date() }
             }
-            logger.info("Success result from Google GeoLocation API:" + JSON.stringify(result));
+            logger.debug("Success result from Google GeoLocation API:" + JSON.stringify(result));
             this.geoStore.store(JSON.stringify(result));
           })
           .error(e => {
-            logger.error("Error result from Google GeoLocation API: " + (e.msg || e.message));
+            logger.error("Error from Google GeoLocation API: " + (e.msg || e.message));
+            logger.error(e.stack());
           });
       }
     }

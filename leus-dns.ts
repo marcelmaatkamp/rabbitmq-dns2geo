@@ -64,8 +64,6 @@ dnsQueryQueue.bind(dnsExchange.getExchange());
 
 var dnsStore = new FileStore("./dns-events.txt"); //initialize DNS file store for logging src DNS requests
 var geoStore = new ExchangeStore(geoResultExchange); //initialize geo exchange store for geo lookup results
-
-logger.info("Using google api key: " + GEO_API_KEY)
 var wifiToGeo = new WifiToGeoGoogle(GEO_API_KEY, GEO_HOSTNAME, GEO_URL);
 
 var dnsResultCache = new DnsResultCache(SSID_DICTIONARY_MAX_SIZE, wifiToGeo, geoStore, dnsStore); //initialize the DNS result cache
@@ -73,12 +71,18 @@ setInterval(() => { dnsResultCache.Update() }, GEO_LOOKUP_INTERVAL); //set the f
 
 //Start the DNS message consumer
 dnsQueryQueue.startConsumer(dnsMessageJson => {
-  logger.info("received: " + dnsMessageJson)
-  var measurements = <AmqpDns.Measurements> JSON.parse(dnsMessageJson);
-console.log(JSON.stringify(measurements));
+  logger.debug("received: " + dnsMessageJson)
+  var data = <AmqpDns.Data>JSON.parse(dnsMessageJson);
+  var measurements = <AmqpDns.Measurements> data.data;
   for (var i = 0, len = measurements.ap.length; i < len; i++) {
     var measurement = <AmqpDns.Measurement> measurements.ap[i];
     var bssid = measurement.bssid.toString(16);
+    if(bssid.length==8) {
+      bssid = "0000"+bssid;
+    }
+    if(bssid.length==9) {
+      bssid = "000"+bssid;
+    }
     if(bssid.length==10) {
       bssid = "00"+bssid;
     }
