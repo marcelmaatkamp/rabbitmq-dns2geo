@@ -20,6 +20,7 @@ const SSID_DICTIONARY_MAX_SIZE = process.env.SSID_DICTIONARY_MAX_SIZE || 10;
 //so we just require them (without having type support from the IDE):
 var amq = require("amq");
 
+// import {config} from "./lib/Config"; //configure config
 import {logger} from "./lib/Logger"; //configure logging
 
 import * as Amqp from "./lib/AmqpWrapper"; //amqp (rabbitmq) queue and exchange abstraction
@@ -89,7 +90,7 @@ dnsQueryQueue.startConsumer(dnsMessageJson => {
     if(bssid.length==11) { 
       bssid = "0"+bssid;
     }
-
+    logger.debug("id("+measurements.id+")-bssid("+bssid+")");
     dnsResultCache.Add(new Date(), measurements.id, bssid, measurement.rssi);
   }
 })

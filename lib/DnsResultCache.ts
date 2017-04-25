@@ -82,6 +82,8 @@ export class DnsResultCache {
 
   //Parse and add a single DNS name based measurement to the tempstore.
   public Add(date: Date, sensor: number, macaddress: string, rssi: number) {
+    logger.debug("s("+sensor+"): mac("+macaddress+"), rssi("+rssi+")");
+
     try { 
       var db = this.CheckDbm(rssi);
       var mac = this.CheckMac(macaddress);

@@ -10,6 +10,7 @@
     "amq": "^0.4.8",
     "bluebird": "^2.9.34",
     "native-dns": "^0.7.0",
-    "winston": "^1.0.1"
+    "winston": "^1.0.1",
+    "@types/convict": "0.6.33"
   }
 }
