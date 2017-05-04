@@ -62,7 +62,6 @@ var dnsQueryQueue = new Amqp.Queue({
 });
 dnsQueryQueue.bind(dnsExchange.getExchange());
 
-
 var dnsStore = new FileStore("./dns-events.txt"); //initialize DNS file store for logging src DNS requests
 var geoStore = new ExchangeStore(geoResultExchange); //initialize geo exchange store for geo lookup results
 var wifiToGeo = new WifiToGeoGoogle(GEO_API_KEY, GEO_HOSTNAME, GEO_URL);

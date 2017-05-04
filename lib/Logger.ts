@@ -28,3 +28,4 @@ var winstonLogger = new winston.Logger({
 });
 
 export const logger: winston.LoggerInstance = winstonLogger;
+logger.debug("debug enabled!");
